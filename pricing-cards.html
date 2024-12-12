@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <title>Pricing Cards</title>
+    <style>
+      /* style the main page */
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, sans-serif;
+        background: #f8fafc;
+        min-height: 100vh;
+      }
+
+      header {
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      .text-center {
+        text-align: center;
+      }
+
+      h1 {
+        color: #0f172a;
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        color: #64748b;
+        font-size: 1.25rem;
+        margin-bottom: 3rem;
+      }
+    </style>
+
+    <!-- template for a single card -->
+    <template id="pricing-card-template">
+      <!-- single card template styles -->
+      <style>
+        /* select the shadow host, in this case the
+        custom element itself <pricing-card> */
+        :host {
+          display: block;
+        }
+
+        /* style the card */
+        .card {
+          width: 300px;
+          padding: 2rem;
+          border-radius: 8px;
+          border: 1px solid #e2e8f0;
+          text-align: center;
+          transition: transform 0.2s;
+          background: white;
+        }
+
+        /* select the .card element inside any
+        <pricing-card> that has the preferred attribute. */
+        :host([preferred]) .card {
+          border: 2px solid #3b82f6;
+          transform: scale(1.05);
+          box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .card:hover {
+          transform: translateY(-5px);
+        }
+
+        :host([preferred]) .card:hover {
+          transform: translateY(-5px) scale(1.05);
+        }
+
+        .plan-name {
+          font-size: 1.5rem;
+          font-weight: bold;
+          margin: 0;
+          color: #1e293b;
+        }
+
+        .price {
+          font-size: 3rem;
+          font-weight: bold;
+          margin: 1rem 0;
+          color: #0f172a;
+        }
+
+        .price span {
+          font-size: 1rem;
+          color: #64748b;
+        }
+
+        /* since feature list is being passed through a slot,
+        need the ::slotted selector */
+        ::slotted([slot='features']) {
+          list-style: none;
+          padding: 0;
+          margin: 2rem 0;
+          text-align: left;
+        }
+
+        .preferred-badge {
+          background: #3b82f6;
+          color: white;
+          padding: 0.5rem 1rem;
+          border-radius: 1rem;
+          font-size: 0.875rem;
+          margin-bottom: 1rem;
+          /* by default, display none */
+          display: none;
+        }
+
+        :host([preferred]) .preferred-badge {
+          /* set display if the card has the preferred attribute */
+          display: inline-block;
+        }
+
+        button {
+          width: 100%;
+          padding: 1rem;
+          border-radius: 0.5rem;
+          border: none;
+          background: #3b82f6;
+          color: white;
+          font-weight: bold;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        button:hover {
+          background: #2563eb;
+        }
+      </style>
+
+      <!-- single card template HTML -->
+      <div class="card">
+        <span class="preferred-badge">
+          <!-- slot for badge -->
+          <slot name="badge">Most Popular</slot>
+        </span>
+        <h2 class="plan-name">
+          <!-- slot for plan-name -->
+          <slot name="plan-name">Plan Name</slot>
+        </h2>
+        <div class="price">
+          <!-- slot for price -->
+          <slot name="price">$0</slot><span>/month</span>
+        </div>
+        <!-- slot for features -->
+        <slot name="features"></slot>
+        <button>
+          <!-- slot for button text -->
+          <slot name="button-text">Get Started</slot>
+        </button>
+      </div>
+    </template>
+
+    <!-- template for a pricing cards container -->
+    <template id="pricing-cards-template">
+      <!-- pricing cards template styles -->
+      <style>
+        :host {
+          display: flex;
+          gap: 2rem;
+          padding: 2rem;
+          justify-content: center;
+        }
+
+        /* media query to change flex-direction */
+        @media (max-width: 768px) {
+          :host {
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+          }
+        }
+      </style>
+      <!-- pricing cards template HTML -->
+      <!-- here we setup an empty, un-named slot to allow for multiple/any values -->
+      <slot></slot>
+    </template>
+  </head>
+
+  <body>
+    <!-- generic header stuff, unrelated to the web component -->
+    <header>
+      <div class="container">
+        <h1 class="text-center">Simple, transparent pricing</h1>
+        <p class="subtitle text-center">
+          Choose the perfect plan for your business
+        </p>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- setup cards container -->
+      <pricing-cards>
+        <!-- "basic card" -->
+        <pricing-card>
+          <span slot="plan-name">Basic</span>
+          <span slot="price">$9</span>
+          <ul slot="features" class="features">
+            <li>1 User</li>
+            <li>10GB Storage</li>
+            <li>Basic Support</li>
+          </ul>
+        </pricing-card>
+
+        <!-- "preferred" card -->
+        <pricing-card preferred>
+          <span slot="plan-name">Pro</span>
+          <span slot="price">$29</span>
+          <span slot="badge">Most Popular</span>
+          <ul slot="features" class="features">
+            <li>5 Users</li>
+            <li>50GB Storage</li>
+            <li>Priority Support</li>
+            <li>Advanced Features</li>
+          </ul>
+        </pricing-card>
+
+        <!-- "enterprise" card -->
+        <pricing-card>
+          <span slot="plan-name">Enterprise</span>
+          <span slot="price">$99</span>
+          <ul slot="features" class="features">
+            <li>Unlimited Users</li>
+            <li>500GB Storage</li>
+            <li>24/7 Support</li>
+            <li>Custom Features</li>
+            <li>Analytics</li>
+          </ul>
+          <span slot="button-text">Contact Sales</span>
+        </pricing-card>
+      </pricing-cards>
+    </main>
+
+    <!-- component definitions -->
+    <script>
+      // single pricing card component
+      class PricingCard extends HTMLElement {
+        constructor() {
+          // must call super
+          super();
+          // select the template
+          const template = document.getElementById(
+            'pricing-card-template'
+          );
+          // attach shadow
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          // append
+          shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+      }
+
+      // cards container component
+      class PricingCards extends HTMLElement {
+        constructor() {
+          // must call super
+          super();
+          // select the template
+          const template = document.getElementById(
+            'pricing-cards-template'
+          );
+          // attach shadow
+          const shadowRoot = this.attachShadow({ mode: 'open' });
+          // append
+          shadowRoot.appendChild(template.content.cloneNode(true));
+        }
+      }
+
+      // register custom elements
+      customElements.define('pricing-card', PricingCard);
+      customElements.define('pricing-cards', PricingCards);
+    </script>
+  </body>
+</html>
